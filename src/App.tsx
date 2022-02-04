@@ -25,12 +25,7 @@ export function App() {
   const [toDos, setToDos] = useRecoilState(todoAtom);
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
     if (!destination) return;
-    // setToDos(oldToDos => {
-    //   const toDosCopy = [...oldToDos];
-    //   toDosCopy.splice(source.index, 1);
-    //   toDosCopy.splice(destination?.index, 0, draggableId);
-    //   return toDosCopy;
-    // });
+
     if (destination.droppableId === source.droppableId) {
       setToDos(allBoard => {
         const boardCopy = [...allBoard[source.droppableId]];
