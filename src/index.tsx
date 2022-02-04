@@ -1,10 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { RecoilRoot } from 'recoil';
+import { ThemeProvider } from 'styled-components';
 import { App } from './App';
+import { GlobalStyle } from './asset/css/globalStyle';
+import { theme } from './asset/css/theme/theme';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RecoilRoot>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <App />
+      </ThemeProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );
