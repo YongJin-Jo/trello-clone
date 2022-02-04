@@ -10,14 +10,14 @@ const Card = styled.div`
   background-color: ${props => props.theme.cardColor};
 `;
 
-interface IProps {
+interface ICradProps {
   toDo: string;
   index: number;
 }
 
-const DragCard = ({ toDo, index }: IProps) => {
+const DragCard = ({ toDo, index }: ICradProps) => {
   return (
-    <Draggable key={toDo} draggableId={toDo} index={index}>
+    <Draggable draggableId={toDo} index={index}>
       {magic => (
         <Card
           ref={magic.innerRef}
