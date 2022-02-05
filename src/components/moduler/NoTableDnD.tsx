@@ -1,5 +1,10 @@
 import React from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { todoAtom } from '../../store/atom';
@@ -58,11 +63,20 @@ const NoTableDnD = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
-        <Boards>
-          {Object.keys(toDos).map(boardId => (
-            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-          ))}
-        </Boards>
+        <Droppable droppableId="table" type="table" direction="horizontal">
+          {(magic, info) => (
+            <Boards {...magic.droppableProps} ref={magic.innerRef}>
+              {Object.keys(toDos).map((boardId, index) => (
+                <Board
+                  boardId={boardId}
+                  key={boardId}
+                  index={index}
+                  toDos={toDos[boardId]}
+                />
+              ))}
+            </Boards>
+          )}
+        </Droppable>
       </Wrapper>
     </DragDropContext>
   );

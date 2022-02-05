@@ -51,6 +51,7 @@ const Form = styled.form`
 interface IBoardProps {
   toDos: ITodo[];
   boardId: string;
+  index: number;
 }
 
 interface IAreaProps {
@@ -61,7 +62,7 @@ interface IForm {
   toDo: string;
 }
 
-function Board({ toDos, boardId }: IBoardProps) {
+function Board({ toDos, boardId, index }: IBoardProps) {
   const setToDos = useSetRecoilState(todoAtom);
   const { register, handleSubmit, setValue } = useForm<IForm>();
 
@@ -73,38 +74,46 @@ function Board({ toDos, boardId }: IBoardProps) {
     setValue('toDo', '');
   };
   return (
-    <Wrapper>
-      <Title>{boardId}</Title>
-      <Droppable droppableId={boardId}>
-        {(magic, info) => (
-          <Area
-            isDraggingOver={info.isDraggingOver}
-            isDraggingFromThis={Boolean(info.draggingFromThisWith)}
-            ref={magic.innerRef}
-            {...magic.droppableProps}
-          >
-            {toDos.map((toDo, index) => (
-              <DragCard
-                key={toDo.id}
-                index={index}
-                id={toDo.id}
-                text={toDo.text}
+    <Draggable draggableId={boardId.toString()} index={index}>
+      {(magic, info) => (
+        <Wrapper
+          {...magic.dragHandleProps}
+          {...magic.draggableProps}
+          ref={magic.innerRef}
+        >
+          <Title>{boardId}</Title>
+          <Droppable droppableId={boardId} type="tesk">
+            {(magic, info) => (
+              <Area
+                isDraggingOver={info.isDraggingOver}
+                isDraggingFromThis={Boolean(info.draggingFromThisWith)}
+                ref={magic.innerRef}
+                {...magic.droppableProps}
+              >
+                {toDos.map((toDo, index) => (
+                  <DragCard
+                    key={toDo.id}
+                    index={index}
+                    id={toDo.id}
+                    text={toDo.text}
+                  />
+                ))}
+                {magic.placeholder}
+              </Area>
+            )}
+          </Droppable>
+          {boardId === 'ToDo' && (
+            <Form onSubmit={handleSubmit(onValid)}>
+              <input
+                {...register('toDo', { required: true })}
+                type="text"
+                placeholder={`Add task on ${boardId}`}
               />
-            ))}
-            {magic.placeholder}
-          </Area>
-        )}
-      </Droppable>
-      {boardId === 'ToDo' && (
-        <Form onSubmit={handleSubmit(onValid)}>
-          <input
-            {...register('toDo', { required: true })}
-            type="text"
-            placeholder={`Add task on ${boardId}`}
-          />
-        </Form>
+            </Form>
+          )}
+        </Wrapper>
       )}
-    </Wrapper>
+    </Draggable>
   );
 }
 export default Board;

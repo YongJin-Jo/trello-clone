@@ -1,27 +1,32 @@
 import React from 'react';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { TableAtom } from '../../store/atom';
-import Board from './Board';
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 480px;
-  width: 100%;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
   height: 100vh;
 `;
 
-const Boards = styled.div`
+const Boards = styled.div<{ isDraggingOver: boolean }>`
+  background-color: ${props => (props.isDraggingOver ? 'red' : '')};
+
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(3, 1fr);
 `;
 
-const BoradTable = styled.div`
+const Card = styled.div`
+  display: flex;
   padding: 20px 10px;
   width: 300px;
   padding: 20px 10px;
@@ -33,29 +38,41 @@ const BoradTable = styled.div`
   flex-direction: column;
 `;
 
+const arr = [1, 2, 3];
+
 const Table = () => {
   const tableSatate = useRecoilValue(TableAtom);
-  const onDragEnd = (data: any) => {
+  const onDragEnd = (data: DropResult) => {
     console.log(data);
+
+    return;
   };
   console.log(tableSatate);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
-        <Droppable droppableId="one">
-          {magic => (
-            <Boards {...magic.droppableProps} ref={magic.innerRef}>
-              {tableSatate.map((item, index) => (
-                <Draggable draggableId={index.toString()} index={index}>
-                  {magic => (
-                    <BoradTable
+        <Droppable droppableId="table" type="table" direction="horizontal">
+          {(magic, info) => (
+            <Boards
+              isDraggingOver={info.isDraggingOver}
+              {...magic.droppableProps}
+              ref={magic.innerRef}
+            >
+              {arr.map((item, index) => (
+                <Draggable
+                  draggableId={index.toString()}
+                  index={index}
+                  key={index}
+                >
+                  {(magic, info) => (
+                    <Card
+                      {...magic.dragHandleProps}
                       {...magic.draggableProps}
                       ref={magic.innerRef}
-                      key={index}
                     >
                       {item}
-                    </BoradTable>
+                    </Card>
                   )}
                 </Draggable>
               ))}
