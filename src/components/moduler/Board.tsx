@@ -1,5 +1,8 @@
 import { Droppable } from 'react-beautiful-dnd';
+import { useForm } from 'react-hook-form';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { ITodo, todoAtom } from '../../store/atom';
 import DragCard from '../atom/DragCard';
 
 const Wrapper = styled.div`
@@ -21,13 +24,21 @@ const Title = styled.h1`
 `;
 
 const Area = styled.div<IAreaProps>`
+  flex-grow: 1;
   background-color: ${props =>
-    props.isDraggingOver ? 'pink' : props.isDraggingFromThis ? 'red' : 'blue'};
+    props.isDraggingOver
+      ? '#dfe6e9'
+      : props.isDraggingFromThis
+      ? '#b2bec3'
+      : 'transparent'};
   transition: background-color 0.3s ease-in-out;
+  border-radius: 5px;
 `;
 
+const Form = styled.form``;
+
 interface IBoardProps {
-  toDos: string[];
+  toDos: ITodo[];
   boardId: string;
 }
 
@@ -35,8 +46,21 @@ interface IAreaProps {
   isDraggingFromThis: boolean;
   isDraggingOver: boolean;
 }
+interface IForm {
+  toDo: string;
+}
 
 function Board({ toDos, boardId }: IBoardProps) {
+  const setToDos = useSetRecoilState(todoAtom);
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+
+  const onValid = ({ toDo }: IForm) => {
+    const newTodo = { id: Date.now(), text: toDo };
+    setToDos(oldTodos => {
+      return { ...oldTodos, [boardId]: [...oldTodos[boardId], newTodo] };
+    });
+    setValue('toDo', '');
+  };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
@@ -49,12 +73,24 @@ function Board({ toDos, boardId }: IBoardProps) {
             {...magic.droppableProps}
           >
             {toDos.map((toDo, index) => (
-              <DragCard key={toDo} index={index} toDo={toDo} />
+              <DragCard
+                key={toDo.id}
+                index={index}
+                id={toDo.id}
+                text={toDo.text}
+              />
             ))}
             {magic.placeholder}
           </Area>
         )}
       </Droppable>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register('toDo', { required: true })}
+          type="text"
+          placeholder={`Add task on ${boardId}`}
+        />
+      </Form>
     </Wrapper>
   );
 }
