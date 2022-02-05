@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { localStorageEffect } from './localstoage';
 
 export interface ITodo {
   id: number;
@@ -12,11 +13,18 @@ interface IToDoState {
 export const todoAtom = atom<IToDoState>({
   key: 'toDo',
   default: {
-    to_do: [
-      { id: 1, text: '공부하기' },
-      { id: 2, text: '공부하기' },
-    ],
-    doing: [{ id: 3, text: '공부하기' }],
+    ToDo: [],
+    doing: [],
     done: [],
   },
+  effects_UNSTABLE: [localStorageEffect('todoAtom')],
+});
+
+export const TableAtom = atom({
+  key: 'table',
+  default: [
+    { ToDo: [{ id: 1, text: 'hello' }] },
+    { Doing: [{ id: 2, text: 'hello' }] },
+    { Done: [{ id: 3, text: 'hello' }] },
+  ],
 });

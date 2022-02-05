@@ -1,4 +1,4 @@
-import { Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { useForm } from 'react-hook-form';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -35,7 +35,18 @@ const Area = styled.div<IAreaProps>`
   border-radius: 5px;
 `;
 
-const Form = styled.form``;
+const Form = styled.form`
+  border-radius: 5px;
+  margin-bottom: 5px;
+  padding: 5px 5px;
+  background-color: ${props => props.theme.cardColor};
+  input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 10px;
+  }
+`;
 
 interface IBoardProps {
   toDos: ITodo[];
@@ -84,13 +95,15 @@ function Board({ toDos, boardId }: IBoardProps) {
           </Area>
         )}
       </Droppable>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register('toDo', { required: true })}
-          type="text"
-          placeholder={`Add task on ${boardId}`}
-        />
-      </Form>
+      {boardId === 'ToDo' && (
+        <Form onSubmit={handleSubmit(onValid)}>
+          <input
+            {...register('toDo', { required: true })}
+            type="text"
+            placeholder={`Add task on ${boardId}`}
+          />
+        </Form>
+      )}
     </Wrapper>
   );
 }
