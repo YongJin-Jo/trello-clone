@@ -1,37 +1,52 @@
 import React from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { todoAtom } from '../../store/atom';
+import { IToDoState, todoAtom } from '../../store/atom';
 import Board from './Board';
 
-const Wrapper = styled.div`
-  display: flex;
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
+const Wrapper = styled.div``;
 
-const Boards = styled.div`
+const Boards = styled.div<{ isDraggingOver: boolean }>`
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(3, 1fr);
+  background-color: ${props =>
+    props.isDraggingOver
+      ? '#dfe6e9'
+      : props.isDraggingOver
+      ? '#b2bec3'
+      : 'transparent'};
+  transition: background-color 0.3s ease-in-out;
 `;
 
 const NoTableDnD = () => {
   const [toDos, setToDos] = useRecoilState(todoAtom);
 
-  const onDragEnd = ({ destination, source }: DropResult) => {
+  const onDragEnd = ({
+    destination,
+    draggableId,
+    source,
+    type,
+  }: DropResult) => {
     if (!destination) return;
+    console.log(source);
+    console.log(destination);
+    console.log(draggableId);
 
+    if (type === 'table') {
+      setToDos(allBoard => {
+        const board = Object.keys(allBoard);
+        board.splice(source.index, 1);
+        board.splice(destination.index, 0, draggableId);
+        const newBorad: IToDoState = {};
+        board.forEach(key => {
+          newBorad[key] = allBoard[key];
+        });
+        return newBorad;
+      });
+      return;
+    }
     if (destination.droppableId === source.droppableId) {
       setToDos(allBoard => {
         const boardCopy = [...allBoard[source.droppableId]];
@@ -43,6 +58,7 @@ const NoTableDnD = () => {
           [source.droppableId]: boardCopy,
         };
       });
+      return;
     }
     if (destination.droppableId !== source.droppableId) {
       setToDos(allBoard => {
@@ -58,6 +74,7 @@ const NoTableDnD = () => {
           [destination.droppableId]: destinationBoard,
         };
       });
+      return;
     }
   };
   return (
@@ -65,7 +82,11 @@ const NoTableDnD = () => {
       <Wrapper>
         <Droppable droppableId="table" type="table" direction="horizontal">
           {(magic, info) => (
-            <Boards {...magic.droppableProps} ref={magic.innerRef}>
+            <Boards
+              isDraggingOver={info.isDraggingOver}
+              {...magic.droppableProps}
+              ref={magic.innerRef}
+            >
               {Object.keys(toDos).map((boardId, index) => (
                 <Board
                   boardId={boardId}

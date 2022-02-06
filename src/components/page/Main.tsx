@@ -1,12 +1,23 @@
 import React from 'react';
+import styled from 'styled-components';
+import CreateBoradButton from '../atom/CreateBoradButton';
 import NoTableDnD from '../moduler/NoTableDnD';
-import TableDnD from '../moduler/TableDnD';
+
+const Wapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
 const Main = () => {
   return (
-    <>
+    <Wapper>
       <NoTableDnD />
-      <TableDnD />
-    </>
+      <CreateBoradButton />
+    </Wapper>
   );
 };
 

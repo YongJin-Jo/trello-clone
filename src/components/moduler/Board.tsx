@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { useForm } from 'react-hook-form';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { ITodo, todoAtom } from '../../store/atom';
+import { ITodo, IToDoState, todoAtom } from '../../store/atom';
 import DragCard from '../atom/DragCard';
 
 const Wrapper = styled.div`
@@ -48,6 +49,8 @@ const Form = styled.form`
   }
 `;
 
+const TitleForm = styled(Form)``;
+
 interface IBoardProps {
   toDos: ITodo[];
   boardId: string;
@@ -60,11 +63,12 @@ interface IAreaProps {
 }
 interface IForm {
   toDo: string;
+  title: string;
 }
 
 function Board({ toDos, boardId, index }: IBoardProps) {
   const setToDos = useSetRecoilState(todoAtom);
-  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const { register, handleSubmit, setValue, setFocus } = useForm<IForm>();
 
   const onValid = ({ toDo }: IForm) => {
     const newTodo = { id: Date.now(), text: toDo };
@@ -73,15 +77,44 @@ function Board({ toDos, boardId, index }: IBoardProps) {
     });
     setValue('toDo', '');
   };
+
+  const onTitleValue = ({ title }: IForm) => {
+    if (title === '') {
+      setFocus('title');
+    }
+    setToDos(allBoard => {
+      const board = Object.keys(allBoard);
+      const newBorad: IToDoState = {};
+
+      board.splice(index, 1);
+      board.splice(index, 0, title);
+      console.log(board);
+
+      board.forEach(key => {
+        if (!allBoard[key]) {
+          newBorad[key] = [];
+          return;
+        }
+        newBorad[key] = allBoard[key];
+      });
+      return newBorad;
+    });
+  };
   return (
     <Draggable draggableId={boardId.toString()} index={index}>
-      {(magic, info) => (
+      {magic => (
         <Wrapper
           {...magic.dragHandleProps}
           {...magic.draggableProps}
           ref={magic.innerRef}
         >
-          <Title>{boardId}</Title>
+          {boardId ? (
+            <Title>{boardId}</Title>
+          ) : (
+            <TitleForm onSubmit={handleSubmit(onTitleValue)}>
+              <input type="text" {...register('title', { required: true })} />
+            </TitleForm>
+          )}
           <Droppable droppableId={boardId} type="tesk">
             {(magic, info) => (
               <Area
@@ -102,7 +135,7 @@ function Board({ toDos, boardId, index }: IBoardProps) {
               </Area>
             )}
           </Droppable>
-          {boardId === 'ToDo' && (
+          {boardId && (
             <Form onSubmit={handleSubmit(onValid)}>
               <input
                 {...register('toDo', { required: true })}
@@ -116,4 +149,4 @@ function Board({ toDos, boardId, index }: IBoardProps) {
     </Draggable>
   );
 }
-export default Board;
+export default memo(Board);
