@@ -1,46 +1,40 @@
-# Getting Started with Create React App
+# Drag and Drop을 적용해 DoTo List 만들기
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[페이지 바로가기](https://yongjin-jo.github.io/trello-clone/)
 
-## Available Scripts
+### 사용한 라이브러리
 
-In the project directory, you can run:
+- react-hook-form
+- recoil
+- styled-components
+- react-beautiful-dnd
 
-### `yarn start`
+## 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Board 컴포넌트 Drag and Drop 적용
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+![BoardDnD](markdown/img/dnd_board.gif)
 
-### `yarn test`
+### Card 컴포넌트 Drag and Drop 적용
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![BoardDnD](markdown/img/dnd_card.gif)
 
-### `yarn build`
+### 새로운 Board 생성
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![BoardDnD](markdown/img/create_new_board.gif)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 기타 기능
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 로컬 스토리지 저장 기능
 
-### `yarn eject`
+- List 추가 기능
+  react-hook-form을 이용하여 form을 구현했습니다. form data는 상태관리 store에 저장됩니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 구현 해야 할 목록
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- [ ] 삭제 기능
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 배운 점
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+상태관리를 사용하면 자식에서 부모로 데이터를 전달할 때 와 부모에서 자식에게 데이터를 전달할 때 prop을 거치치 않고 간편하게 전달 할수 있었습니다.
+dnd 라이브러리를 통해 보다 쉽게 dnd를 경험할 수 있었습니다. 하지만 이러한 라이브러리를 사용하면 보다 편하게 사용할수 있겠지만 원리를 파악하지 않고 사용했기 때문에 커스텀이 필요할시 사용하기 힘들꺼 같습니다. 나중에 기회가 되면 VanillaJs로 직접 구현해야 겠습니다

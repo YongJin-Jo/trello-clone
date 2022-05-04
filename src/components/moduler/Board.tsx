@@ -88,7 +88,6 @@ function Board({ toDos, boardId, index }: IBoardProps) {
 
       board.splice(index, 1);
       board.splice(index, 0, title);
-      console.log(board);
 
       board.forEach(key => {
         if (!allBoard[key]) {

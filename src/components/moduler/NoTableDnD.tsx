@@ -30,9 +30,6 @@ const NoTableDnD = () => {
     type,
   }: DropResult) => {
     if (!destination) return;
-    console.log(source);
-    console.log(destination);
-    console.log(draggableId);
 
     if (type === 'table') {
       setToDos(allBoard => {
